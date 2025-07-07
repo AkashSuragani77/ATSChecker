@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <title>Resume Screener</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+      min-height: 100vh;
+      color: #fff;
+      position: relative;
+      z-index: 0;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: -1;
+    }
+
+    h2 {
+      color: #f0f0f0;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.7);
+    }
+
+    form {
+      margin-top: 20px;
+      background: rgba(255,255,255,0.15);
+      padding: 25px 40px;
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px);
+    }
+
+    input[type="file"],
+    input[type="submit"] {
+      padding: 12px;
+      font-size: 16px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: none;
+      display: block;
+      width: 100%;
+      max-width: 300px;
+    }
+
+    input[type="file"] {
+      background: rgba(255,255,255,0.85);
+      color: #333;
+      cursor: pointer;
+    }
+
+    input[type="file"]:hover {
+      background: rgba(255,255,255,1);
+    }
+
+    input[type="submit"] {
+      background: #007bff;
+      color: white;
+      font-weight: bold;
+      border-radius: 30px;
+      box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
+      transition: 0.3s ease;
+    }
+
+    input[type="submit"]:hover {
+      background: #0056b3;
+      box-shadow: 0 6px 25px rgba(0, 86, 179, 0.6);
+    }
+
+    .result {
+      margin-top: 30px;
+      padding: 25px;
+      border-radius: 15px;
+      text-align: center;
+      animation: fadeIn 1.2s ease-in-out;
+      max-width: 420px;
+      width: 90%;
+      background: rgba(255, 255, 255, 0.95);
+      color: #333;
+    }
+
+    .score {
+      font-size: 42px;
+      font-weight: bold;
+      animation: bounceIn 1s ease;
+    }
+
+    .feedback {
+      font-size: 20px;
+      margin-top: 12px;
+      font-weight: bold;
+      animation: fadePop 0.8s ease-in-out;
+    }
+
+    .low { color: #dc3545; }
+    .medium { color: #ffc107; }
+    .high { color: #007bff; }
+    .top { color: #28a745; }
+
+    .emoji {
+      font-size: 48px;
+      margin-top: 15px;
+      animation: popIn 0.8s ease-in-out;
+    }
+
+    .start-message {
+      margin-top: 40px;
+      font-size: 20px;
+      background: rgba(255, 255, 255, 0.9);
+      color: #333;
+      padding: 15px 30px;
+      border-radius: 12px;
+      font-weight: bold;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      animation: bounceIn 1s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes bounceIn {
+      0% { transform: scale(0.7); opacity: 0; }
+      60% { transform: scale(1.1); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes fadePop {
+      0% { transform: scale(0.9); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <h2>Upload Your Resume (PDF)</h2>
+
+  <form method="post" enctype="multipart/form-data">
+    <input type="file" name="resume" required>
+    <input type="submit" value="Upload & Analyze">
+  </form>
+
+  {% if score is not none %}
+    <div class="result">
+      {% set score_class = "low" %}
+      {% set emoji = "😐" %}
+      {% if score >= 80 %}
+        {% set score_class = "top" %}
+        {% set emoji = "🤩" %}
+      {% elif score >= 60 %}
+        {% set score_class = "high" %}
+        {% set emoji = "😃" %}
+      {% elif score >= 40 %}
+        {% set score_class = "medium" %}
+        {% set emoji = "🙂" %}
+      {% endif %}
+
+      <div class="score {{ score_class }}">
+        Score: {{ score }}/100
+      </div>
+      <div class="feedback {{ score_class }}">
+        {{ feedback }}
+      </div>
+      <div class="emoji">{{ emoji }}</div>
+    </div>
+  {% else %}
+    <div class="start-message">📄 Please upload your resume to get started!</div>
+  {% endif %}
+</body>
+</html>
